@@ -1,0 +1,124 @@
+//                      go_on
+//              I am the one who knocks !!
+#include <bits/stdc++.h>
+using namespace std;
+
+
+//      LOOPS AND MEM
+#define mz(a) memset(a,0,sizeof(a))
+#define md(a,m,n) memset(a,-1,sizeof(a[0][0])*m*n);
+#define mm(a) memset(a,-1,sizeof(a))
+#define minf(a) memset(a,MEMSET_INF,sizeof(a));
+#define SZ(x) ((int)(x).size())
+#define f(i,a,n) for(long long int i=a;i<=n;++i)
+#define fs(i,a,n) for(long long int i=a;i<n;++i)
+#define fl(i,n,a) for(long long int i=n;i>=a;--i)
+
+
+//       I/O
+#define i(n) cin>>n
+#define is(n) scanf("%s",n)
+#define s(n) scanf("%d",&n)
+#define sl(n) scanf("%lld",&n)
+#define o(n) cout<<n
+#define p(n) printf("%d",n)
+#define ps printf(" ")
+#define pn printf("\n")
+#define pl(n) printf("%lld",n)
+#define os cout<<" "
+#define on cout<<"\n"
+
+
+//       CONTAINERS
+typedef vector <int> vi;
+typedef pair<int, int> pii;
+#define PB push_back
+#define MP make_pair
+#define ff first
+#define ss second
+#define all(a)  a.begin(),a.end()
+#define fv(i,v) for(auto i = v.begin();i !=v.end(); ++i)
+
+
+//        DEF AND INIT
+#define ll long long int
+#define MOD (ll)(1e9+7)
+#define eps 1e-15
+const int MAX = 10005;
+
+int isp[MAX],vis[MAX],p,q;
+queue<int>qu;
+
+void seive()
+{
+    int i,j;
+    isp[0]=isp[1]=1;
+    for(i=2;i<=10002;++i)
+    {
+        if(!isp[i])
+        {
+            for(j=1;i*j<=10002;++j)        isp[i*j]=i;
+        }
+    }
+}
+
+int num(int a[])
+{
+    int ans=0;
+    f(i,0,3)    ans=ans*10+a[i];
+    return ans;
+}
+
+int arr(int n,int a[])
+{
+    int k=3;
+    while(n)
+    {
+        a[k--]=n%10;
+        n/=10;
+    }
+}
+
+int solve()
+{
+    int a[5];
+    qu.push(p);
+    vis[p]=0;
+    while(!qu.empty())
+    {
+        int n=qu.front();
+        qu.pop();
+        f(i,0,3)
+        {
+            arr(n,a);
+            f(j,0,9)
+            {
+                a[i]=j;
+                int x=num(a);
+                if(isp[x]==x and vis[x]==-1 and x>=1000)
+                {
+                    vis[x]=vis[n]+1;
+                    qu.push(x);
+                }
+            }
+        }
+    }
+    (vis[q]!=-1)?o(vis[q]):o("Impossible");
+    on;
+
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
+    int t;
+    i(t);
+    seive();
+    while(t--)
+    {
+        i(p);i(q);
+        mm(vis);
+        solve();
+    }
+    return 0;
+}
