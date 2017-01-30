@@ -1,0 +1,112 @@
+//                      go_on
+//              I am the one who knocks !!
+#include <bits/stdc++.h>
+using namespace std;
+
+
+//      LOOPS AND MEM
+#define mz(a) memset(a,0,sizeof(a))
+#define md(a,m,n) memset(a,-1,sizeof(a[0][0])*m*n);
+#define mm(a) memset(a,-1,sizeof(a))
+#define minf(a) memset(a,MEMSET_INF,sizeof(a));
+#define SZ(x) ((int)(x).size())
+#define f(i,a,n) for(long long int i=a;i<=n;++i)
+#define fs(i,a,n) for(long long int i=a;i<n;++i)
+#define fl(i,n,a) for(long long int i=n;i>=a;--i)
+
+
+//       I/O
+#define i(n) cin>>n
+#define is(n) scanf("%s",n)
+#define s(n) scanf("%d",&n)
+#define sl(n) scanf("%lld",&n)
+#define o(n) cout<<n
+#define p(n) printf("%d",n)
+#define ps printf(" ")
+#define pn printf("\n")
+#define pl(n) printf("%lld",n)
+#define os cout<<" "
+#define on cout<<"\n"
+
+
+//       CONTAINERS
+typedef vector <int> vi;
+typedef pair<int, int> pii;
+#define PB push_back
+#define MP make_pair
+#define ff first
+#define ss second
+#define all(a)  a.begin(),a.end()
+#define fv(i,v) for(auto i = v.begin();i !=v.end(); ++i)
+
+
+//        DEF AND INIT
+#define ll long long int
+#define MOD (ll)(1e9+7)
+#define eps 1e-15
+const int MAX = 30001;
+
+int a[MAX];
+vector<pair<pii,pii> >v;
+vector<pii>vec;
+int bit[30008];
+
+bool cmp(const pair<pii, pii>&i, const pair<pii, pii>&j)
+{
+    return i.ff.ff > j.ff.ff;
+}
+
+bool comp(const pair<int,int>&i, const pair<int,int>&j)
+{
+    return i.ff > j.ff;
+}
+
+void update(int idx,int n,int val)
+{
+    while(idx<=n)
+    {
+        bit[idx]+=val;
+        idx+=(idx & -idx);
+    }
+}
+
+int query(int idx)
+{
+    int ans=0;
+    while(idx>0)
+    {
+        ans+=bit[idx];
+        idx=idx&(idx-1);
+    }
+    return ans;
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
+    int n,q,x,y,z;
+    i(n);
+    f(i,0,n-1)  {i(x);vec.PB(MP(x,i+1));}
+    sort(all(vec),comp);
+    i(q);
+    f(i,0,q-1)
+    {
+        i(x);i(y);i(z);
+        v.PB(MP(MP(z,i),MP(x,y)));
+    }
+    sort(all(v),cmp);
+    int j=0,sz=vec.size();
+    int ans[q+5];
+    for(auto i:v)
+    {
+        int x=i.ff.ff;
+        while(j<sz and vec[j].ff>x)
+        {
+            update(vec[j].ss,n,1);
+            ++j;
+        }
+        ans[i.ff.ss]=query(i.ss.ss)-query((i.ss.ff)-1);
+    }
+    f(i,0,q-1)  o(ans[i]),on;
+    return 0;
+}
