@@ -1,0 +1,145 @@
+//      go_on
+#include <bits/stdc++.h>
+using namespace std;
+
+
+//      LOOPS AND MEM
+#define mz(a) memset(a,0,sizeof(a))
+#define md(a,m,n) memset(a,-1,sizeof(a[0][0])*m*n);
+#define mm(a) memset(a,-1,sizeof(a))
+#define minf(a) memset(a,MEMSET_INF,sizeof(a));
+#define f(i,a,n) for(int i=a;i<=n;++i)
+#define fs(i,a,n) for(int i=a;i<n;++i)
+#define fl(i,n,a) for(int i=n;i>=a;--i)
+
+
+//       I/O
+#define i(n) cin>>n
+#define is(n) scanf("%s",n)
+#define s(n) scanf("%d",&n)
+#define sl(n) scanf("%lld",&n)
+#define o(n) cout<<n
+#define p(n) printf("%d",n)
+#define ps printf(" ")
+#define pn printf("\n")
+#define pl(n) printf("%lld",n)
+#define os cout<<" "
+#define on cout<<"\n"
+
+
+//       CONTAINERS
+typedef vector <int> vi;
+typedef pair<int, int> pii;
+#define pb push_back
+#define mp make_pair
+#define ff first
+#define ss second
+#define all(a)  a.begin(),a.end()
+//#define fv(i,v) for(auto i = v.begin();i !=v.end(); ++i)
+
+
+//        DEF AND INIT
+#define ll long long int
+#define M (ll)(1e9+7)
+#define eps 1e-15
+#define N (5005)
+/*
+        freopen("in.txt", "r", stdin);
+        freopen("out.txt", "w", stdout);
+*/
+
+// Assuming vertices are labeled 0...v-1
+vi Gp[N],RevGp[N];
+int v,e,leader[N],finish[N],order[N],t=0,parent=0,vis[N],comp[N];
+
+// running DFS on the reverse graph
+void RevDfs(int i)
+{
+    vis[i]=1;
+    for(auto it:RevGp[i])
+        if(!vis[it])   RevDfs(it);
+    finish[i]=t++;
+}
+
+// running DFS on the actual graph
+void dfs(int i)
+{
+    vis[i]=1;
+    leader[i]=parent;
+    for(auto it:Gp[i])
+        if(!vis[it])    dfs(it);
+}
+
+// check if u & v are in the same connected component
+bool checkSCC(int u, int v)
+{
+    return leader[u] == leader[v];
+}
+
+void init(int v)
+{
+    f(i,0,v-1)
+    {
+        Gp[i].resize(0);
+        RevGp[i].resize(0);
+    }
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
+    int i,u,v,SCC,Q,x,y;
+    while(1)
+    {
+        t=0,parent=0;
+        i(v);
+        if(!v)  break;
+        i(e);
+        f(i,0,e-1)
+        {
+            i(x);i(y);
+            Gp[x-1].push_back(y-1);
+            RevGp[y-1].push_back(x-1);
+        }
+
+        mz(vis);
+        f(i,0,v-1)
+        {
+            if(!vis[i])     RevDfs(i);
+            order[finish[i]]=i;
+        }
+
+        mz(vis);
+        SCC = 0;
+        fl(i,v-1,0)
+        {
+            if(!vis[order[i]])
+            {
+                parent=order[i];
+                dfs(order[i]);
+                ++SCC;
+            }
+        }
+
+        mz(comp);
+
+        f(i,0,v-1)
+        {
+            for(auto it:Gp[i])
+            {
+                if(!checkSCC(i,it))
+                {
+                    comp[leader[i]]=1;break;
+                }
+            }
+        }
+
+        f(i,0,v-1)
+        {
+            if(!comp[leader[i]])    o(i+1),os;
+        }
+        on;
+        init(v);
+    }
+    return 0;
+}
