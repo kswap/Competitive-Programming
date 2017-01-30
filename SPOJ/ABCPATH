@@ -1,0 +1,113 @@
+//      go_on
+#include <bits/stdc++.h>
+using namespace std;
+
+
+//      LOOPS AND MEM
+#define mz(a) memset(a,0,sizeof(a))
+#define md(a,m,n) memset(a,-1,sizeof(a[0][0])*m*n);
+#define mm(a) memset(a,-1,sizeof(a))
+#define minf(a) memset(a,MEMSET_INF,sizeof(a));
+#define f(i,a,n) for(long long int i=a;i<=n;++i)
+#define fs(i,a,n) for(long long int i=a;i<n;++i)
+#define fl(i,n,a) for(long long int i=n;i>=a;--i)
+
+
+//       I/O
+#define i(n) cin>>n
+#define is(n) scanf("%s",n)
+#define s(n) scanf("%d",&n)
+#define sl(n) scanf("%lld",&n)
+#define o(n) cout<<n
+#define p(n) printf("%d",n)
+#define ps printf(" ")
+#define pn printf("\n")
+#define pl(n) printf("%lld",n)
+#define os cout<<" "
+#define on cout<<"\n"
+
+
+//       CONTAINERS
+typedef vector <int> vi;
+typedef pair<int, int> pii;
+#define PB push_back
+#define MP make_pair
+#define ff first
+#define ss second
+#define all(a)  a.begin(),a.end()
+#define fv(i,v) for(auto i = v.begin();i !=v.end(); ++i)
+
+
+//        DEF AND INIT
+#define ll long long int
+#define MOD (ll)(1e9+7)
+#define eps 1e-15
+#define MAX 1000005
+/*
+        freopen("in.txt", "r", stdin);
+        freopen("out.txt", "w", stdout);
+*/
+
+char a[55][55];
+
+int b[]={-1,-1,-1,0,0,1,1,1};
+int c[]={-1,0,1,-1,1,-1,0,1};
+
+int ro,co,dp[55][55];
+
+int dfs(int p,int q)
+{
+    if(dp[p][q])    return dp[p][q];
+    if(a[p][q]=='z')
+    {
+        dp[p][q]=1;
+        return dp[p][q];
+    }
+    int mx=0;
+    f(i,0,7)
+    {
+        int m=p+b[i];
+        int n=q+c[i];
+        if(m>=ro or n>=co or m<0 or n<0)  continue;
+        char ch=a[p][q]+1;
+        if(a[m][n]==ch)
+        {
+            mx=max(mx,dfs(m,n));
+        }
+    }
+    dp[p][q]=1+mx;
+    return dp[p][q];
+}
+
+
+int main()
+{
+    ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
+    int cas=0;
+    while(1)
+    {
+        mz(dp);
+        ++cas;
+        string s;
+        int mx=0;
+        i(ro);i(co);
+        if(!ro and !co)   break;
+        f(i,0,ro-1)
+        {
+            i(s);
+            f(j,0,co-1)
+            {
+                a[i][j]=s[j];
+            }
+        }
+        f(i,0,ro-1)
+        {
+            f(j,0,co-1)
+            {
+                if(a[i][j]=='A')        {mx=max(mx,dfs(i,j));};
+            }
+        }
+        o("Case ");o(cas);o(": ");o(mx);on;
+    }
+    return 0;
+}
