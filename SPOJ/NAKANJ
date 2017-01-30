@@ -1,0 +1,104 @@
+//      go_on
+#include <bits/stdc++.h>
+using namespace std;
+
+
+//      LOOPS AND MEM
+#define mz(a) memset(a,0,sizeof(a))
+#define mm(a) memset(a,-1,sizeof(a))
+#define minf(a) memset(a,MEMSET_INF,sizeof(a));
+#define f(i,a,n) for(int i=a;i<=n;++i)
+#define fs(i,a,n) for(int i=a;i<n;++i)
+#define fl(i,n,a) for(int i=n;i>=a;--i)
+
+
+//       I/O
+#define i(n) cin>>n
+#define is(n) scanf("%s",n)
+#define s(n) scanf("%d",&n)
+#define sl(n) scanf("%lld",&n)
+#define o(n) cout<<n
+#define p(n) printf("%d",n)
+#define pl(n) printf("%lld",n)
+#define os cout<<" "
+#define on cout<<"\n"
+
+
+//       CONTAINERS
+typedef vector <int> vi;
+typedef pair<int, int> pii;
+#define pb push_back
+#define mp make_pair
+#define ff first
+#define ss second
+#define all(a)  a.begin(),a.end()
+//#define fv(i,v) for(auto i = v.begin();i !=v.end(); ++i)
+
+
+//        DEF AND INIT
+#define ll long long int
+#define M 1000000007
+#define eps 1e-15
+#define N 35
+//vector<pair<int, pii> >v;
+//map<string,int> MP;
+//map<string,int>::iterator it;
+queue<pair<int,int> > qu;
+pii pr;
+
+int vis[8][8];
+//int a[][2]={{-1,-2,1,2,2,1,-1,-2},{2,1,2,1,-1,-2,-2,-1};
+int a[8][2]={{-1,2},{-2,1},{1,2},{2,1},{2,-1},{1,-2},{-1,-2},{-2,-1}};
+
+int bfs(int x1,int y1,int x2,int y2)
+{
+    qu=queue<pair<int,int> >();
+    int p,p1,q,q1;
+    if((x1==x2) and (y1==y2))   return 0;
+    mm(vis);
+    vis[x1][y1]=0;
+    qu.push(mp(x1,y1));
+    while(!qu.empty())
+    {
+        pr=qu.front();
+        qu.pop();
+        p=pr.ff;
+        q=pr.ss;
+        f(i,0,7)
+        {
+            p1=p+a[i][0];
+            q1=q+a[i][1];
+            if(p1<0 or p1>7 or q1<0 or q1>7)
+               continue;
+            if(vis[p1][q1]==-1)
+            {
+                qu.push(mp(p1,q1));
+                vis[p1][q1]=vis[p][q]+1;
+                if((p1==x2) and (q1==y2))
+                {
+                    return vis[p1][q1];
+                }
+            }
+        }
+    }
+}
+
+int main()
+{
+  //  ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
+    int n,x1,x2,y1,y2;
+    i(n);
+    string s1,s2;
+    while(n--)
+    {
+        i(s1);
+        i(s2);
+        x1=s1[0]-'a';
+        x2=s2[0]-'a';
+        y1=s1[1]-'1';
+        y2=s2[1]-'1';
+       // cout<<"\ncoordinates: "<<x1<<" "<<y1<<"\n"<<x2<<" "<<y2<<"\n";
+        o(bfs(x1,y1,x2,y2));on;
+    }
+    return 0;
+}
