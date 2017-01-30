@@ -1,0 +1,126 @@
+//      go_on
+#include <bits/stdc++.h>
+using namespace std;
+
+
+//      LOOPS AND MEM
+#define mz(a) memset(a,0,sizeof(a))
+#define md(a,m,n) memset(a,-1,sizeof(a[0][0])*m*n);
+#define mm(a) memset(a,-1,sizeof(a))
+#define minf(a) memset(a,MEMSET_INF,sizeof(a));
+#define f(i,a,n) for(int i=a;i<=n;++i)
+#define fs(i,a,n) for(int i=a;i<n;++i)
+#define fl(i,n,a) for(int i=n;i>=a;--i)
+
+
+//       I/O
+#define i(n) cin>>n
+#define is(n) scanf("%s",n)
+#define s(n) scanf("%d",&n)
+#define sl(n) scanf("%lld",&n)
+#define o(n) cout<<n
+#define p(n) printf("%d",n)
+#define ps printf(" ")
+#define pn printf("\n")
+#define pl(n) printf("%lld",n)
+#define os cout<<" "
+#define on cout<<"\n"
+
+
+//       CONTAINERS
+typedef vector <int> vi;
+typedef pair<int, int> pii;
+#define pb push_back
+#define mp make_pair
+#define ff first
+#define ss second
+#define all(a)  a.begin(),a.end()
+//#define fv(i,v) for(auto i = v.begin();i !=v.end(); ++i)
+
+
+//        DEF AND INIT
+#define ll long long int
+#define M (ll)(1e9+7)
+#define eps 1e-15
+#define N (ll)(1e5+5)
+/*
+        freopen("in", "r", stdin);
+        freopen("out", "w", stdout);
+*/
+
+int dp[105][100][2],ans,k;
+
+void rec(int x,int n,int sum,int i)
+{
+    if(i==n+1)
+    {
+        if(sum==k)
+        {
+            ++ans;
+        }
+        return;
+    }
+    if(x)
+    {
+        rec(1,n,sum+1,i+1);
+        rec(0,n,sum,i+1);
+    }
+    else
+    {
+        rec(1,n,sum,i+1);
+        rec(0,n,sum,i+1);
+    }
+}
+
+int solve(int i,int j,int x)
+{
+    if(j<0)
+    {
+        dp[i][j][x]=0;
+        return dp[i][j][x];
+    }
+    if(i==1)
+    {
+        if(!j)
+        {
+            dp[i][j][x]=1;
+        }
+        else
+        {
+            dp[i][j][x]=0;
+        }
+        return dp[i][j][x];
+    }
+    if(x==1)
+    {
+        if(dp[i][j][x]==-1)
+        {
+            dp[i][j][x]=solve(i-1,j-1,1)+solve(i-1,j,0);
+        }
+    }
+    else
+    {
+        if(dp[i][j][x]==-1)
+        {
+            dp[i][j][x]=solve(i-1,j,1)+solve(i-1,j,0);
+        }
+    }
+    return dp[i][j][x];
+}
+
+int main()
+{
+    //ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
+    int t,n,x;
+    s(t);
+    while(t--)
+    {
+        mm(dp);
+        ans=0;
+        i(x);i(n);i(k);
+       // rec(0,n,0,1);
+        ans=solve(n,k,0)+solve(n,k,1);
+        p(x);ps;p(ans);pn;
+    }
+    return 0;
+}
