@@ -1,0 +1,133 @@
+//                      go_on
+//              I am the one who knocks !!
+#include <bits/stdc++.h>
+using namespace std;
+
+
+//      LOOPS AND MEM
+#define mz(a) memset(a,0,sizeof(a))
+#define md(a,m,n) memset(a,-1,sizeof(a[0][0])*m*n);
+#define mm(a) memset(a,-1,sizeof(a))
+#define minf(a) memset(a,MEMSET_INF,sizeof(a));
+#define SZ(x) ((int)(x).size())
+#define f(i,a,n) for(int i=a;i<=n;++i)
+#define fs(i,a,n) for(long long int i=a;i<n;++i)
+#define fl(i,n,a) for(int i=n;i>=a;--i)
+
+
+//       I/O
+#define i(n) cin>>n
+#define is(n) scanf("%s",n)
+#define s(n) scanf("%d",&n)
+#define sl(n) scanf("%lld",&n)
+#define o(n) cout<<n
+#define p(n) printf("%d",n)
+#define ps printf(" ")
+#define pn printf("\n")
+#define pl(n) printf("%lld",n)
+#define os cout<<" "
+#define on cout<<"\n"
+
+
+//       CONTAINERS
+typedef vector <int> vi;
+typedef pair<int, int> pii;
+#define PB push_back
+#define MP make_pair
+#define ff first
+#define ss second
+#define all(a)  a.begin(),a.end()
+#define fv(i,v) for(auto i = v.begin();i !=v.end(); ++i)
+
+
+//        DEF AND INIT
+#define ll long long int
+#define MOD (ll)(1e9+7)
+#define eps 1e-15
+/*
+        freopen("in.txt", "r", stdin);
+        freopen("out.txt", "w", stdout);
+*/
+const int MAX = 1e5+5;
+
+int n,sq=130;
+int a[MAX],blk[MAX],lft[MAX],v[MAX],dp[1020][1020];
+vector<int> id[MAX];
+
+//               COMPRESSION
+void compress()
+{
+	map <int,int> mp;
+	f(i,0,n-1)	        mp[a[i]]++;
+	int cnt=0;
+	for(auto &i:mp)	    i.ss=++cnt;
+	f(i,0,n-1)            a[i]=mp[a[i]];
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
+    int k,i,mx,l,r;
+    i(n);i(k);
+    a[0]=0;
+    f(i,1,n)
+    {
+        i(a[i]);
+        a[i]+=a[i-1];
+    }
+    ++n;
+    compress();
+    f(i,0,n-1)
+    {
+        id[a[i]].PB(i);
+        blk[i]=i/sq;
+    }
+
+    for(i=0;i<n;i+=sq)
+    {
+        mm(lft);
+        mx=0;
+        f(j,i,n-1)
+        {
+            if(lft[a[j]]==-1)   lft[a[j]]=j;
+            mx=max(j-lft[a[j]],mx);
+            if(blk[j]!=blk[j+1])
+            {
+                dp[blk[i]][blk[j]]=mx;
+            }
+        }
+    }
+    f(i,1,k)
+    {
+        i(l);i(r);
+        --l;//--r;
+        if(blk[l]+1>=blk[r])
+        {
+            mx=0;
+            f(j,l,r)
+            {
+                if(v[a[j]]!=i)  lft[a[j]]=j,v[a[j]]=i;
+                mx=max(mx,j-lft[a[j]]);
+            }
+        }
+        else
+        {
+            mx=dp[blk[l]+1][blk[r]-1];
+            int ls=blk[l]*sq+sq;
+            int rr=blk[r]*sq-1;
+            f(j,l,ls-1)
+            {
+                int x=upper_bound(all(id[a[j]]),r)-id[a[j]].begin()-1;
+                mx=max(mx,id[a[j]][x]-j);
+            }
+            fl(j,r,rr+1)
+            {
+                int x=lower_bound(all(id[a[j]]),l)-id[a[j]].begin();
+                mx=max(mx,j-id[a[j]][x]);
+            }
+        }
+        o(mx);on;
+    }
+
+    return 0;
+}
