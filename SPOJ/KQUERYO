@@ -1,0 +1,108 @@
+//                      go_on
+//              I am the one who knocks !!
+#include <bits/stdc++.h>
+using namespace std;
+#define mz(a) memset(a,0,sizeof(a))
+#define md(a,m,n) memset(a,-1,sizeof(a[0][0])*m*n);
+#define mm(a) memset(a,-1,sizeof(a))
+#define minf(a) memset(a,MEMSET_INF,sizeof(a));
+#define SZ(x) ((int)(x).size())
+#define f(i,a,n) for(long long int i=a;i<=n;++i)
+#define fs(i,a,n) for(long long int i=a;i<n;++i)
+#define fl(i,n,a) for(long long int i=n;i>=a;--i)
+#define i(n) cin>>n
+#define is(n) scanf("%s",n)
+#define s(n) scanf("%d",&n)
+#define sl(n) scanf("%lld",&n)
+#define o(n) cout<<n
+#define p(n) printf("%d",n)
+#define ps printf(" ")
+#define pn printf("\n")
+#define pl(n) printf("%lld",n)
+#define os cout<<" "
+#define on cout<<"\n"
+typedef vector <int> vi;
+typedef pair<int, int> pii;
+#define PB push_back
+#define MP make_pair
+#define ff first
+#define ss second
+#define all(a)  a.begin(),a.end()
+#define fv(i,v) for(auto i = v.begin();i !=v.end(); ++i)
+#define ll long long int
+#define MOD (ll)(1e9+7)
+#define eps 1e-15
+const int MAX = 30001;
+
+int a[MAX];
+
+//                                     Merge Sort Tree
+struct node
+{
+    vector<int>v;
+}st[130000];
+
+void build(int idx,int l,int r)
+{
+    if(l==r)
+    {
+        st[idx].v.PB(a[l]);
+        return;
+    }
+    int m=(l+r)>>1;
+    build(2*idx,l,m);
+    build(2*idx+1,m+1,r);
+    int sz1=st[2*idx].v.size();
+    int sz2=st[2*idx+1].v.size();
+    int i=0,j=0;
+    while(i<sz1 and j<sz2)
+    {
+        if(st[2*idx].v[i]<=st[2*idx+1].v[j])
+        {
+            st[idx].v.PB(st[2*idx].v[i]);
+            ++i;
+        }
+        else
+        {
+            st[idx].v.PB(st[2*idx+1].v[j]);
+            ++j;
+        }
+    }
+    while(i<sz1)
+    {
+       st[idx].v.PB(st[2*idx].v[i]);
+       ++i;
+    }
+    while(j<sz2)
+    {
+        st[idx].v.PB(st[2*idx+1].v[j]);
+        ++j;
+    }
+}
+
+int solve(int idx,int lo,int hi,int l,int r,int k)
+{
+    if(hi<l or lo>r)        return 0;
+    if(hi<=r and lo>=l)     {return(st[idx].v.end()-upper_bound(all(st[idx].v),k));}
+    int m=(lo+hi)>>1;
+    return solve(2*idx,lo,m,l,r,k) + solve(2*idx+1,m+1,hi,l,r,k);
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
+    int n,q,x,y,z;
+    i(n);
+    f(i,1,n)  {i(a[i]);}
+    build(1,1,n);
+    i(q);
+    int ans=0;
+    while(q--)
+    {
+        i(x);i(y);i(z);
+        x=x^ans;y=y^ans;z=z^ans;
+        ans=solve(1,1,n,x,y,z);
+        o(ans);on;
+    }
+    return 0;
+}
