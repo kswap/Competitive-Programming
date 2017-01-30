@@ -1,0 +1,112 @@
+//      go_on
+#include <bits/stdc++.h>
+using namespace std;
+
+
+//      LOOPS AND MEM
+#define mz(a) memset(a,0,sizeof(a))
+#define md(a,m,n) memset(a,-1,sizeof(a[0][0])*m*n);
+#define mm(a) memset(a,-1,sizeof(a))
+#define minf(a) memset(a,MEMSET_INF,sizeof(a));
+#define SZ(x) ((int)(x).size())
+#define f(i,a,n) for(long long int i=a;i<=n;++i)
+#define fs(i,a,n) for(long long int i=a;i<n;++i)
+#define fl(i,n,a) for(long long int i=n;i>=a;--i)
+
+
+//       I/O
+#define i(n) cin>>n
+#define is(n) scanf("%s",n)
+#define s(n) scanf("%d",&n)
+#define sl(n) scanf("%lld",&n)
+#define o(n) cout<<n
+#define p(n) printf("%d",n)
+#define ps printf(" ")
+#define pn printf("\n")
+#define pl(n) printf("%lld",n)
+#define os cout<<" "
+#define on cout<<"\n"
+
+
+//       CONTAINERS
+typedef vector <int> vi;
+typedef pair<int, int> pii;
+#define PB push_back
+#define MP make_pair
+#define ff first
+#define ss second
+#define all(a)  a.begin(),a.end()
+#define fv(i,v) for(auto i = v.begin();i !=v.end(); ++i)
+
+
+//        DEF AND INIT
+#define ll long long int
+#define MOD (ll)(1e9+7)
+#define eps 1e-15
+#define MAX 100005
+/*
+        freopen("in.txt", "r", stdin);
+        freopen("out.txt", "w", stdout);
+*/
+
+stack<int>st;
+
+int pre(char ch)
+{
+    if(ch=='+')     return 1;
+    if(ch=='-')     return 2;
+    if(ch=='*')     return 3;
+    if(ch=='/')     return 4;
+    if(ch=='^')     return 5;
+    if(ch=='(')     return -1;
+}
+
+void solve(string s)
+{
+    for(auto i:s)
+    {
+        if(isalpha(i))  o(i);
+        else
+        {
+            if(i==')')
+            {
+                while(!st.empty())
+                {
+                    char ch=st.top();
+                    st.pop();
+                    if(ch=='(') break;
+                    o(ch);
+                }
+            }
+            else if(i=='(' or st.empty() or pre(i)>pre(st.top()))
+            {
+                st.push(i);
+            }
+            else
+            {
+                while(!st.empty())
+                {
+                    if(pre(st.top())<pre(i)) break;
+                    char ch=st.top();
+                    st.pop();
+                    o(ch);
+                }
+            }
+        }
+    }
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
+    int t;
+    string s;
+    i(t);
+    while(t--)
+    {
+        i(s);
+        solve(s);
+        on;
+    }
+    return 0;
+}
