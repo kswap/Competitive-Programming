@@ -1,0 +1,131 @@
+//      go_on
+#include <bits/stdc++.h>
+using namespace std;
+
+
+//      LOOPS AND MEM
+#define mz(a) memset(a,0,sizeof(a))
+#define md(a,m,n) memset(a,-1,sizeof(a[0][0])*m*n);
+#define mm(a) memset(a,-1,sizeof(a))
+#define minf(a) memset(a,MEMSET_INF,sizeof(a));
+#define SZ(x) ((int)(x).size())
+#define f(i,a,n) for(long long int i=a;i<=n;++i)
+#define fs(i,a,n) for(long long int i=a;i<n;++i)
+#define fl(i,n,a) for(long long int i=n;i>=a;--i)
+
+
+//       I/O
+#define i(n) cin>>n
+#define is(n) scanf("%s",n)
+#define s(n) scanf("%d",&n)
+#define sl(n) scanf("%lld",&n)
+#define o(n) cout<<n
+#define p(n) printf("%d",n)
+#define ps printf(" ")
+#define pn printf("\n")
+#define pl(n) printf("%lld",n)
+#define os cout<<" "
+#define on cout<<"\n"
+
+
+//       CONTAINERS
+typedef vector <int> vi;
+typedef pair<int, int> pii;
+#define PB push_back
+#define MP make_pair
+#define ff first
+#define ss second
+#define all(a)  a.begin(),a.end()
+#define fv(i,v) for(auto i = v.begin();i !=v.end(); ++i)
+
+
+//        DEF AND INIT
+#define ll long long int
+#define MOD (ll)(1e9+7)
+#define eps 1e-15
+#define MAX (ll)(1e5+5)
+/*
+        freopen("in.txt", "r", stdin);
+        freopen("out.txt", "w", stdout);
+*/
+
+/*-----------------------------------KMP Implementation-------------------------------------------------*/
+
+int ans=0;
+
+void LpsArray(string pat, int M, int *lps);
+
+void KMP(string pat, string txt)
+{
+    int len1=pat.size();
+    int len2=txt.size();
+
+    int *lps=(int *)malloc(sizeof(int)*len1);
+
+    LpsArray(pat,len1,lps);
+
+    int i=0,j=0;
+    while(i<len2)
+    {
+      if(pat[j] == txt[i])
+      {
+        ++i,++j;
+      }
+      if(j==len1)
+      {
+        ans=i-j;
+        j=lps[j-1];
+        o(ans);on;
+      }
+      if(pat[j] != txt[i])
+      {
+        if(j)      j=lps[j-1];
+        else       ++i;
+      }
+    }
+    free(lps);
+}
+
+void LpsArray(string pat, int M, int *lps)
+{
+    int len=0;
+    int i=1;
+    lps[0]=0;
+
+    while(i<M)
+    {
+       if(pat[i]!=pat[len])
+       {
+         if(len)        
+         {
+         	len=lps[len-1];
+         }
+         else
+         {
+           lps[i]=0;
+           ++i;
+         }
+       }
+       else
+       {
+         ++len;
+         lps[i]=len;
+         ++i;
+       }
+    }
+}
+
+int main()
+{
+    //ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
+    int n;
+    string txt,pat;
+    while(scanf("%d",&n)==1)
+    {
+        i(pat);
+        i(txt);
+        KMP(pat,txt);
+        on;
+    }
+    return 0;
+}
