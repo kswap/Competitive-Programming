@@ -1,0 +1,91 @@
+#include <iostream>
+#include <vector>
+#include <utility>
+#include <algorithm>
+#include <cstring>
+#include <cstdio>
+#include <set>
+#include <map>
+#include <queue>
+using namespace std;
+#define lli long long int
+#define pb push_back
+#define mp make_pair
+#define ii pair<int,int>
+#define pii pair<lli,int>
+#define psi pair<string,int>
+#define MAX 10005
+map< string, int > m;
+map< string, int > :: iterator it;
+vector<ii> p[MAX];
+int dis[MAX],vis[MAX];
+void fun(int source,int des)
+{
+    int ind_,dis_;
+    priority_queue< pii, vector< pii >, greater< pii > > s;
+    s.push(ii(0,source));
+    memset(vis,0,sizeof(vis));
+    memset(dis,-1,sizeof(dis));
+    vis[source]=1;
+    dis[source]=0;
+    while(!s.empty())
+    {
+        ind_=s.top().second;
+        dis_=s.top().first;
+        s.pop();
+        vis[ind_]=2;
+        for(int i=0;i<p[ind_].size();++i)
+        {
+            if(vis[p[ind_][i].second]==0)
+            {
+                s.push(ii(dis[ind_]+p[ind_][i].first,p[ind_][i].second));
+                vis[p[ind_][i].second]=1;
+                dis[p[ind_][i].second]=dis[ind_]+p[ind_][i].first;
+            }
+            else if(vis[p[ind_][i].second]==1 && dis[p[ind_][i].second]>(dis[ind_]+p[ind_][i].first))
+            {
+				s.push(ii(dis[ind_]+p[ind_][i].first,p[ind_][i].second));
+				dis[p[ind_][i].second]=dis[ind_]+p[ind_][i].first;
+            }
+        }
+        if(ind_==des)
+            break;
+    }
+}
+int main()
+{
+    char a[12],b[12];
+    int n,e,e1,e2,source,des,t,w,q;
+    scanf("%d",&t);
+    while(t--)
+    {
+        scanf("%d",&n);
+        for(int j=1;j<=n;++j)
+        {
+            scanf("%s%d",a,&e);
+            m.insert(psi(a,j));
+            p[j].clear();
+            while(e--)
+            {
+                scanf("%d%d",&e2,&w);
+                p[j].pb(ii(w,e2));
+            }
+        }
+        scanf("%d",&q);
+        while(q--)
+        {
+            scanf("%s",a);
+            it=m.find(a);
+            source=(*it).second;
+            scanf("%s",b);
+            it=m.find(b);
+            des=(*it).second;
+            fun(source,des);
+            if(dis[des]==-1)
+                printf("NO\n");
+            else
+                printf("%d\n",dis[des]);
+        }
+    }
+    return 0;
+}
