@@ -1,0 +1,90 @@
+//      go_on
+#include <bits/stdc++.h>
+using namespace std;
+
+
+//      LOOPS AND MEM
+#define mz(a) memset(a,0,sizeof(a))
+#define md(a,m,n) memset(a,-1,sizeof(a[0][0])*m*n);
+#define mm(a) memset(a,-1,sizeof(a))
+#define minf(a) memset(a,MEMSET_INF,sizeof(a));
+#define f(i,a,n) for(int i=a;i<=n;++i)
+#define fs(i,a,n) for(int i=a;i<n;++i)
+#define fl(i,n,a) for(int i=n;i>=a;--i)
+
+
+//       I/O
+#define i(n) cin>>n
+#define is(n) scanf("%s",n)
+#define s(n) scanf("%d",&n)
+#define sl(n) scanf("%lld",&n)
+#define o(n) cout<<n
+#define p(n) printf("%d",n)
+#define ps printf(" ")
+#define pn printf("\n")
+#define pl(n) printf("%lld",n)
+#define os cout<<" "
+#define on cout<<"\n"
+
+
+//       CONTAINERS
+typedef vector <int> vi;
+typedef pair<int, int> pii;
+#define pb push_back
+#define mp make_pair
+#define ff first
+#define ss second
+#define all(a)  a.begin(),a.end()
+//#define fv(i,v) for(auto i = v.begin();i !=v.end(); ++i)
+
+
+//        DEF AND INIT
+#define ll long long int
+#define M (ll)(1e9+7)
+#define eps 1e-15
+#define N 25
+#define MAX 1100000
+/*
+        freopen("in.txt", "r", stdin);
+        freopen("out.txt", "w", stdout);
+*/
+
+ll dp[MAX],a[N][N];
+
+ll rec(ll mask,int n)
+{
+    if(mask==0) return 1;
+    if(dp[mask]!=-1)    return dp[mask];
+    ll stud=__builtin_popcount(mask);
+    dp[mask]=0;
+    f(i,0,n-1)
+    {
+        if(a[stud-1][i] and (((mask) >> (i)) & 1))
+        {
+            dp[mask]+=rec(mask&(~(1<<i)),n);
+        }
+    }
+    return dp[mask];
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
+    int t,n;
+    i(t);
+    while(t--)
+    {
+        mm(dp);
+        i(n);
+        f(i,0,n-1)
+        {
+            f(j,0,n-1)
+            {
+                i(a[i][j]);
+            }
+        }
+        ll mx=(1<<n)-1;
+        o(rec(mx,n));on;
+    }
+    return 0;
+}
