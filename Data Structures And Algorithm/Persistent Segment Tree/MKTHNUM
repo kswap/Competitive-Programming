@@ -1,0 +1,109 @@
+//                      go_on
+//              I am the one who knocks !!
+#include <bits/stdc++.h>
+using namespace std;
+#define mz(a) memset(a,0,sizeof(a))
+#define mm(a) memset(a,-1,sizeof(a))
+#define SZ(x) ((int)(x).size())
+#define f(i,a,n) for(long long int i=a;i<=n;++i)
+#define fl(i,n,a) for(long long int i=n;i>=a;--i)
+#define i(n) cin>>n
+#define o(n) cout<<n
+#define os cout<<" "
+#define on cout<<"\n"
+typedef vector <int> vi;
+typedef pair<int, int> pii;
+#define PB push_back
+#define MP make_pair
+#define ff first
+#define ss second
+#define all(a)  a.begin(),a.end()
+#define ll long long int
+#define MOD (ll)(1e9+7)
+#define eps 1e-15
+
+const int MAX=4e6;
+#define lg 20
+int n,a[MAX],b[MAX],cnt;
+
+//             Persistent Segment Tree
+
+struct node{
+    node* l,* r;
+    int sz;
+    node()
+    {
+      l=r=this;
+      sz=0;
+    }
+    static node* empty;
+
+};
+
+node nodes[MAX];
+int nxt = 0;
+node* node::empty = &nodes[0];
+
+node* newNode(int sz = 0,node* l = node::empty,node* r = node::empty)
+{
+    nxt++;
+    node *ret = &nodes[nxt];
+    ret->sz = sz;
+    ret->l = l;
+    ret->r = r;
+    return ret;
+}
+
+node* insert(node* prev,int val,int l=0,int r=cnt)
+{
+    if(val>r || val<l)      return prev;
+    if(l==r)                return newNode(prev->sz+1);
+    int m=(l+r)>>1;
+    node* lft=insert(prev->l,val,l,m);
+    node* rt=insert(prev->r,val,m+1,r);
+    return newNode(lft->sz+rt->sz,lft,rt);
+}
+
+int query(node *a,node *b,int k,int l=0,int r=cnt)
+{
+    if(l==r)  return l;
+    int m=(l+r)>>1;
+    int sz=(a->l->sz)-(b->l->sz);
+    if(k<=sz)       return query(a->l,b->l,k,l,m);
+    else            return query(a->r,b->r,k-sz,m+1,r);
+}
+
+void compress()
+{
+	map <int,int> mp;
+	f(i,0,n-1)	        mp[a[i]]++;
+	cnt=0;
+	int sz=SZ(mp);
+	for(map <int,int>::iterator it=mp.begin();it!=mp.end();++it)	        it->ss=cnt++;
+	f(i,0,n-1)          {b[mp[a[i]]]=a[i];a[i]=mp[a[i]];}
+	--cnt;
+}
+
+node* root[100005];
+
+int main()
+{
+    ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
+	int m,u,v;
+	root[0]=newNode();
+	i(n);i(m);
+	f(i,0,n-1)  i(a[i]);
+	compress();
+	f(i,1,n)
+	{
+        root[i]=insert(root[i-1],a[i-1]);
+	}
+
+	while(m--)
+	{
+		int k;
+		i(u);i(v);i(k);
+		int ans =query(root[v],root[u-1],k);
+		o(b[ans]);on;
+	}
+}
