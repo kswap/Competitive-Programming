@@ -1,0 +1,80 @@
+//                      go_on
+//              I am the one who knocks !!
+#include <bits/stdc++.h>
+using namespace std;
+#define mz(a) memset(a,0,sizeof(a))
+#define mm(a) memset(a,-1,sizeof(a))
+#define SZ(x) ((int)(x).size())
+#define f(i,a,n) for(long long int i=a;i<=n;++i)
+#define fl(i,n,a) for(long long int i=n;i>=a;--i)
+#define i(n) cin>>n
+#define o(n) cout<<n
+#define os cout<<" "
+#define on cout<<"\n"
+typedef vector <int> vi;
+typedef pair<int, int> pii;
+#define PB push_back
+#define MP make_pair
+#define ff first
+#define ss second
+#define all(a)  a.begin(),a.end()
+#define ll long long int
+#define MOD (ll)(1e9+7)
+#define eps 1e-15
+const int MAX = 1e6+5;
+
+//                                      PERSISTENT SEGMENT TREE
+struct node
+{
+	int fre;
+	node *left,*right;
+  
+	node(int fre, node *left, node *right):
+		fre(fre), left(left), right(right) {}
+
+	node* insert(int val,int l,int r);
+};
+
+int a[MAX],cnt;
+node *root[MAX];
+node *null=new node(0,NULL,NULL);
+
+node * node::insert(int val,int l=1,int r=cnt+1)
+{
+	if(l<=val and val<r)
+	{
+		if((l+1)==r)    return new node(this->fre+1, null, null);
+		int m=(l+r)>>1;
+		return new node(this->fre+1,this->left->insert(val,l,m),this->right->insert(val,m,r));
+	}
+	return this;
+}
+
+int query(node *a,node *b,int k,int l=1,int r=cnt+1)
+{
+	if(l+1 == r)    return l;
+	int m=(l+r)>>1;
+	if((a->left->fre - b->left->fre)>k)       return query(a->left,b->left,k,l,m);
+    if((a->right->fre - b->right->fre)>k)	  return query(a->right,b->right,k,m,r);
+    return -1;
+}
+
+int main()
+{
+  ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
+	int n,m;
+	i(n);i(cnt);
+	f(i,0,n-1)	i(a[i]);
+	null->left=null->right=null;
+	root[0]=null;
+	f(i,1,n)	root[i]=(root[i-1])->insert(a[i-1]);
+    i(m);
+	while(m--)
+	{
+		int u,v,k;
+		i(u);i(v);
+		k=(v-u+1)>>1;
+		int ans=query(root[v],(root[u-1]),k);
+		(ans==-1)?o("no\n"):(o("yes "),o(ans),on);
+	}
+}
