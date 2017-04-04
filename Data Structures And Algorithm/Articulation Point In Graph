@@ -1,0 +1,106 @@
+//                      go_on
+//              I am the one who knocks !!
+#include <bits/stdc++.h>
+using namespace std;
+#define mz(a) memset(a,0,sizeof(a))
+#define mm(a) memset(a,-1,sizeof(a))
+#define f(i,a,n) for(long long int i=a;i<=n;++i)
+#define fl(i,n,a) for(long long int i=n;i>=a;--i)
+#define i(n) cin>>n
+#define o(n) cout<<n
+#define os cout<<" "
+#define on cout<<"\n"
+typedef vector <int> vi;
+typedef pair<int, int> pii;
+#define PB push_back
+#define MP make_pair
+#define ff first
+#define ss second
+#define all(a)  a.begin(),a.end()
+#define ll long long int
+#define MOD (ll)(1e9+7)
+#define eps 1e-15
+const int MAX = 100005;
+
+int T;
+vector<int> g[105];
+bool isArticulationPoint[105];
+int vis[105];
+int low[105];
+
+void findArticulationPoint(int u,int P)
+{
+    vis[u] = T;
+    low[u] = T++;
+
+    int childCnt = 0;
+    bool articulationPoint = false;
+
+    for (auto v: g[u])
+    {
+        if(P == v)  continue;
+        if (vis[v] == -1)
+        {
+            childCnt++;
+
+            findArticulationPoint(v,u);
+
+            if (low[v] >= vis[u])       articulationPoint = true;
+
+            low[u] = min(low[u], low[v]);
+        }
+        else
+        {
+            low[u] = min(low[u], vis[v]);
+        }
+    }
+
+    if ((P == -1 && childCnt >= 2) || (P != -1 && articulationPoint))
+    {
+        isArticulationPoint[u] = true;
+    }
+}
+
+
+int main()
+{
+    ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
+
+    int t, i, j, n, m, u, v, ans, zeroColored, oneColored;
+    string str;
+    stringstream ss;
+
+    while (cin >> n >> ws, n)
+    {
+        T=1;
+        f(i,1,n)
+        {
+            g[i].clear();
+        }
+
+        while (getline(cin, str), ss.clear(), ss.str(str), ss >> u, u)
+        {
+            while (ss >> v)
+            {
+                g[u].PB(v);
+                g[v].PB(u);
+            }
+        }
+
+        mm(vis);
+        mz(isArticulationPoint);
+
+        findArticulationPoint(1,-1);
+
+        ans = 0;
+
+        f(i,1,n)
+        {
+            ans+=isArticulationPoint[i];
+        }
+        o(ans);on;
+    }
+
+    return 0;
+}
+
