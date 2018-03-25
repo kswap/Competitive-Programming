@@ -1,0 +1,127 @@
+//                      go_on
+//              I am the one who knocks !!
+#include <bits/stdc++.h>
+using namespace std;
+
+
+//      LOOPS AND MEM
+#define mz(a) memset(a,0,sizeof(a))
+#define md(a,m,n) memset(a,-1,sizeof(a[0][0])*m*n);
+#define mm(a) memset(a,-1,sizeof(a))
+#define minf(a) memset(a,MEMSET_INF,sizeof(a));
+#define SZ(x) ((int)(x).size())
+#define f(i,a,n) for(long long int i=a;i<=n;++i)
+#define fs(i,a,n) for(long long int i=a;i<n;++i)
+#define fl(i,n,a) for(long long int i=n;i>=a;--i)
+
+
+//       I/O
+#define i(n) cin>>n
+#define is(n) scanf("%s",n)
+#define s(n) scanf("%d",&n)
+#define sl(n) scanf("%lld",&n)
+#define o(n) cout<<n
+#define p(n) printf("%d",n)
+#define ps printf(" ")
+#define pn printf("\n")
+#define pl(n) printf("%lld",n)
+#define os cout<<" "
+#define on cout<<"\n"
+
+
+//       CONTAINERS
+typedef vector <int> vi;
+typedef pair<int, int> pii;
+#define PB push_back
+#define MP make_pair
+#define ff first
+#define ss second
+#define all(a)  a.begin(),a.end()
+#define fv(i,v) for(auto i = v.begin();i !=v.end(); ++i)
+
+
+//        DEF AND INIT
+#define ll long long int
+#define MOD (ll)(1e9+7)
+#define eps 1e-15
+const int MAX = 1e5+5;
+
+bool isNine(string s)
+{
+    int len=s.length();
+    for(int i=0;i<len;++i)
+    {
+        if(s[i]!='9')   return 0;
+    }
+    return 1;
+}
+
+string palin(string s)
+{
+    int len=s.length();
+    int md=(len)>>1;
+    int l=md-1;
+    int r=(len%2)?md+1:md;
+    while(l>=0 && s[l]==s[r])
+    {
+        --l;++r;
+    }
+    if(l<0 || s[l]<s[r])
+    {
+        int c=1;
+        if(len%2)
+        {
+            l=md;r=md;
+        }
+        else
+        {
+            l=md-1;r=md;
+        }
+        while(l>=0)
+        {
+            int x=((s[l]-'0')+c);
+            c=x/10;
+            s[l]=(x%10)+'0';
+            s[r]=s[l];
+            --l;++r;
+        }
+    }
+    else
+    {
+        while(l>=0)
+        {
+            s[r]=s[l];
+            --l;++r;
+        }
+    }
+    return s;
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
+    int t;
+    string s;
+    i(t);
+    while(t--)
+    {
+        i(s);
+        int len=s.length();
+        bool nine=isNine(s);
+        if(nine)
+        {
+            for(int i=0;i<len;++i)
+            {
+                s[i]='0';
+                if(i==(len-1))  s[i]='1';
+            }
+            s.insert(0,"1");
+        }
+        else
+        {
+            s=palin(s);
+        }
+        o(s);on;
+    }
+    return 0;
+}
