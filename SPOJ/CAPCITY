@@ -1,0 +1,111 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+
+vector<int>graph[100005], revGraph[100005];
+stack<int>dfsStack;
+bool vis[100005];
+int scc[100005];
+int indeg[100005];
+
+void dfs(int city) {
+    vis[city] = true;
+    for(auto desCity: graph[city]) {
+        if(!vis[desCity]) {
+            dfs(desCity);
+        }
+    }
+    dfsStack.push(city);
+}
+
+void revDfs(int city, int sccCount) {
+    vis[city] = false;
+    for(auto desCity: revGraph[city]) {
+        if(vis[desCity]) {
+            revDfs(desCity, sccCount);
+        }
+    }
+    scc[city] = sccCount;
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
+    int n,m;
+    cin>>n>>m;
+
+    for(int i=1;i<=n;++i){
+        graph[i].clear();
+        revGraph[i].clear();
+        vis[i] = false;
+        scc[i]=0;
+        indeg[i]=0;
+    }
+
+    int city1, city2;
+    for(int i=0;i<m;++i) {
+        cin>>city1>>city2;
+        graph[city1].push_back(city2);
+        revGraph[city2].push_back(city1);
+    }
+
+    for(int i=1;i<=n;++i){
+        if(!vis[i]) {
+            dfs(i);
+        }
+    }
+
+    // Find all SCCs and assign all the nodes in a SCC a same number(sccCount)
+    int sccCount = 1;
+    while(!dfsStack.empty()) {
+        int city = dfsStack.top();
+        dfsStack.pop();
+
+        if(vis[city]) {
+            revDfs(city,sccCount);
+            sccCount++;
+        }
+    }
+
+    // Find indegree of all SCCs in graph with reversed edges
+    for(int i=1;i<=n;++i) {
+        for(auto city:revGraph[i]) {
+            if(scc[i] != scc[city]) {
+                indeg[scc[city]]++;
+            }
+        }
+    }
+
+    // Find count of SCCs with indegree 0 
+    int cnt = 0, source = 1;
+    for(int i=1;i<sccCount;++i) {
+        if(!indeg[i]) {
+            ++cnt;
+            source = i;
+            if(cnt > 1) break;
+        }
+    }
+    
+    // If count of SCCs with indegree 0 is 1 in reverse graph - then only it is possible that the nodes in that SCC is reachable 
+    // from every other node in original graph.
+    if(cnt == 1) {
+        int ans = 0;
+        for(int i=1;i<=n;++i) {
+            if(scc[i] == source) {
+                ++ans;
+            }
+        }
+        cout<<ans<<"\n";
+
+        // Print vertices in increasing order(Needed for this problem)
+        for(int i=1;i<=n;++i) {
+            if(scc[i] == source) {
+                cout<<i<<" ";
+            }
+        }
+        cout<<"\n";
+    } else {
+        cout<<"0\n";
+    }
+    return 0;
+}
